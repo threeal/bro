@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"log"
+	"strings"
 	"time"
 
 	pb "threeal/threeal-bot/pkg/echo"
@@ -26,7 +27,8 @@ func main() {
 	c := pb.NewEchoClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.Echo(ctx, &pb.Message{Message: "test"})
+	msg := strings.Join(flag.Args()[:], " ")
+	r, err := c.Echo(ctx, &pb.Message{Message: msg})
 	if err != nil {
 		log.Fatalf("could not call echo: %v", err)
 	}
