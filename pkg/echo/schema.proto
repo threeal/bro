@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "threeal/threeal-bot";
+
+package echo;
+
+service Echo {
+  rpc Echo (Message) returns (Message) {}
+}
+
+message Message {
+  string message = 1;
+}
