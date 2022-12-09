@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "threeal/threeal-bot";
+option go_package = "threeal/threeal-bot/pkg/echo";
 
 package echo;
 
