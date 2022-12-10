@@ -13,8 +13,10 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+type Cmd = func(grpc.ClientConnInterface, context.Context, []string) (string, error)
+
 var (
-	cmds = map[string]func(grpc.ClientConnInterface, context.Context, []string) (string, error){
+	cmds = map[string]Cmd{
 		"echo": echo.CallService,
 	}
 )
