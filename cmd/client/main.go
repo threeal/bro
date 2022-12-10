@@ -7,13 +7,13 @@ import (
 	"time"
 
 	"threeal/threeal-bot/pkg/echo"
+	"threeal/threeal-bot/pkg/utils"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 var (
-	addr = flag.String("addr", "localhost:50051", "the address to connect to")
 	cmds = map[string]func(grpc.ClientConnInterface, context.Context, []string) (string, error){
 		"echo": echo.CallService,
 	}
@@ -26,7 +26,8 @@ func main() {
 	if !ok {
 		log.Fatalf("invalid command: %s", arg)
 	}
-	conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	addr := utils.GetEnvOrDefault("THREEAL_BOT_ADDR", "localhost:50051")
+	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
 	}
