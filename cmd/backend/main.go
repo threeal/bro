@@ -3,23 +3,16 @@ package main
 import (
 	"log"
 	"net"
-	"os"
 
 	"threeal/threeal-bot/pkg/echo"
+	"threeal/threeal-bot/pkg/utils"
 
 	"google.golang.org/grpc"
 )
 
-func getAddr() string {
-	port, ok := os.LookupEnv("THREEAL_BOT_ADDR")
-	if !ok {
-		return ":50051"
-	}
-	return port
-}
-
 func main() {
-	lis, err := net.Listen("tcp", getAddr())
+	addr := utils.GetEnvOrDefault("THREEAL_BOT_ADDR", ":50051")
+	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
