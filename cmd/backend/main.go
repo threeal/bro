@@ -4,8 +4,8 @@ import (
 	"log"
 	"net"
 
-	"threeal/threeal-bot/pkg/echo"
-	"threeal/threeal-bot/pkg/utils"
+	"github.com/threeal/threeal-bot/pkg/echo"
+	"github.com/threeal/threeal-bot/pkg/utils"
 
 	"google.golang.org/grpc"
 )

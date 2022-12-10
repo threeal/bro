@@ -1,4 +1,4 @@
-module threeal/threeal-bot
+module github.com/threeal/threeal-bot
 
 go 1.19
 
