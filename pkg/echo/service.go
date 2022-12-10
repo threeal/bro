@@ -15,10 +15,6 @@ func (s *Server) Echo(ctx context.Context, msg *Message) (*Message, error) {
 	return msg, nil
 }
 
-func RegisterService(s grpc.ServiceRegistrar) {
-	RegisterEchoServer(s, &Server{})
-}
-
 func CallService(cc grpc.ClientConnInterface, ctx context.Context, args []string) (string, error) {
 	c := NewEchoClient(cc)
 	msg := strings.Join(args, " ")
