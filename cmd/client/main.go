@@ -6,25 +6,23 @@ import (
 	"log"
 	"time"
 
-	"github.com/threeal/threeal-bot/pkg/echo"
+	"github.com/threeal/threeal-bot/pkg/cli"
 	"github.com/threeal/threeal-bot/pkg/utils"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type Cmd = func(grpc.ClientConnInterface, context.Context, []string) (string, error)
-
 var (
-	cmds = map[string]Cmd{
-		"echo": echo.CallService,
+	newClientFuncs = map[string]func(grpc.ClientConnInterface) cli.EchoClient{
+		"echo": cli.NewEchoClient,
 	}
 )
 
 func main() {
 	flag.Parse()
 	arg := flag.Arg(0)
-	cmd, ok := cmds[arg]
+	newClientFunc, ok := newClientFuncs[arg]
 	if !ok {
 		log.Fatalf("invalid command: %s", arg)
 	}
@@ -34,9 +32,10 @@ func main() {
 		log.Fatalf("failed to connect: %v", err)
 	}
 	defer conn.Close()
+	client := newClientFunc(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	res, err := cmd(conn, ctx, flag.Args()[1:])
+	res, err := client.Call(ctx, flag.Args()[1:])
 	if err != nil {
 		log.Fatalf("failed to call command: %v", err)
 	}
