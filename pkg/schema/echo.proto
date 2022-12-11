@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-option go_package = "threeal/threeal-bot/pkg/echo";
+option go_package = "threeal/threeal-bot/pkg/schema";
 
-package echo;
+package schema;
 
 service Echo {
   rpc Echo (Message) returns (Message) {}
