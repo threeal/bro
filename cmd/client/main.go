@@ -13,26 +13,25 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-var (
-	newClientFuncs = map[string]func(grpc.ClientConnInterface) cli.EchoClient{
-		"echo": cli.NewEchoClient,
+func getClient(key string, conn grpc.ClientConnInterface) cli.Client {
+	if key == "echo" {
+		return cli.NewEchoClient(conn)
 	}
-)
+	return nil
+}
 
 func main() {
 	flag.Parse()
-	arg := flag.Arg(0)
-	newClientFunc, ok := newClientFuncs[arg]
-	if !ok {
-		log.Fatalf("invalid command: %s", arg)
-	}
 	addr := utils.GetEnvOrDefault("THREEAL_BOT_ADDR", "localhost:50051")
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
 	}
 	defer conn.Close()
-	client := newClientFunc(conn)
+	client := getClient(flag.Arg(0), conn)
+	if client == nil {
+		log.Fatalf("invalid command: %s", flag.Arg(0))
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	res, err := client.Call(ctx, flag.Args()[1:])
