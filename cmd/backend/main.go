@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/threeal/threeal-bot/pkg/echo"
+	"github.com/threeal/threeal-bot/pkg/service"
 	"github.com/threeal/threeal-bot/pkg/utils"
 
 	"google.golang.org/grpc"
@@ -17,7 +18,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	server := grpc.NewServer()
-	echo.RegisterEchoServer(server, &echo.Server{})
+	echo.RegisterEchoServer(server, &service.EchoServer{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := server.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
