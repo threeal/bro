@@ -1,0 +1,15 @@
+name: build
+on:
+  workflow_dispatch:
+  push:
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v2.5.0
+        with:
+          fetch-depth: 0
+
+      - name: Build the project
+        run: go build github.com/threeal/threeal-bot/...
