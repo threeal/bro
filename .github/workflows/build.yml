@@ -11,5 +11,8 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Generate sources from proto files
+        run: make proto
+
       - name: Build the project
         run: go build github.com/threeal/threeal-bot/...
