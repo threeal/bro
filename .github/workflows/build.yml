@@ -11,6 +11,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Protobuf
+        run: sudo snap install protobuf --classic
+
       - name: Generate sources from proto files
         run: make proto
 
