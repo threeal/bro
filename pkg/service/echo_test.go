@@ -27,7 +27,7 @@ func TestEchoServer(t *testing.T) {
 	client := schema.NewEchoClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	t.Run("Call Echo", func(t *testing.T) {
+	t.Run("CallEcho", func(t *testing.T) {
 		msg := schema.Message{Message: "Hello world!"}
 		res, err := client.Echo(ctx, &msg)
 		if err != nil {

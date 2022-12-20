@@ -26,16 +26,24 @@ func TestEchoClient(t *testing.T) {
 		t.Fatalf("failed to connect to 'localhost:50050': %v", err)
 	}
 	client := NewEchoClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	msg := "Hello world!"
 	t.Run("Call", func(t *testing.T) {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+		msg := "Hello world!"
 		res, err := client.Call(ctx, []string{msg})
 		if err != nil {
 			t.Fatalf("echo client failed to call: %v", err)
 		}
 		if res != msg {
 			t.Fatalf("expected '%s', got: %s", msg, res)
+		}
+	})
+	t.Run("InvalidCall", func(t *testing.T) {
+		ctx, cancel := context.WithTimeout(context.Background(), 0*time.Second)
+		defer cancel()
+		_, err := client.Call(ctx, []string{"foo"})
+		if err == nil {
+			t.Fatalf("expected echo client failed to call, got success instead")
 		}
 	})
 }
