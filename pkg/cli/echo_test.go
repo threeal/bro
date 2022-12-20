@@ -1,4 +1,4 @@
-package service
+package cli
 
 import (
 	"context"
@@ -7,34 +7,35 @@ import (
 	"time"
 
 	"github.com/threeal/threeal-bot/pkg/schema"
+	"github.com/threeal/threeal-bot/pkg/service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func TestEchoServer(t *testing.T) {
+func TestEchoClient(t *testing.T) {
 	lis, err := net.Listen("tcp", ":50050")
 	if err != nil {
 		t.Fatalf("failed to listen to ':50050': %v", err)
 	}
 	server := grpc.NewServer()
-	schema.RegisterEchoServer(server, &EchoServer{})
+	schema.RegisterEchoServer(server, &service.EchoServer{})
 	go func() { server.Serve(lis) }()
 	time.Sleep(100 * time.Millisecond)
 	conn, err := grpc.Dial("localhost:50050", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		t.Fatalf("failed to connect to 'localhost:50050': %v", err)
 	}
-	client := schema.NewEchoClient(conn)
+	client := NewEchoClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	t.Run("Call Echo", func(t *testing.T) {
-		msg := schema.Message{Message: "Hello world!"}
-		res, err := client.Echo(ctx, &msg)
+	msg := "Hello world!"
+	t.Run("Call", func(t *testing.T) {
+		res, err := client.Call(ctx, []string{msg})
 		if err != nil {
-			t.Fatalf("failed to call echo rpc: %v", err)
+			t.Fatalf("echo client failed to call: %v", err)
 		}
-		if res.GetMessage() != msg.GetMessage() {
-			t.Fatalf("expected '%s', got: %s", msg.GetMessage(), res.GetMessage())
+		if res != msg {
+			t.Fatalf("expected '%s', got: %s", msg, res)
 		}
 	})
 }
