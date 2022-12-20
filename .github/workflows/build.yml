@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
 jobs:
-  release:
+  buiild-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
@@ -17,5 +17,8 @@ jobs:
       - name: Generate sources from proto files
         run: make proto
 
-      - name: Build the project
-        run: go build github.com/threeal/threeal-bot/...
+      - name: Build this project
+        run: go build ./cmd/...
+
+      - name: Test this project
+        run: go test ./pkg/...
