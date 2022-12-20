@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
 jobs:
-  release:
+  buiild-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
@@ -19,3 +19,6 @@ jobs:
 
       - name: Build this project
         run: go build ./...
+
+      - name: Test this project
+        run: go test ./...
