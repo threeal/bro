@@ -3,10 +3,10 @@ on:
   workflow_dispatch:
   push:
 jobs:
-  buiild-and-test:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout this repository
+      - name: Checkout repository
         uses: actions/checkout@v2.5.0
         with:
           fetch-depth: 0
@@ -17,8 +17,8 @@ jobs:
       - name: Generate sources
         run: go generate ./pkg/...
 
-      - name: Build this project
+      - name: Build targets
         run: go build ./cmd/...
 
-      - name: Test this project
+      - name: Run tests
         run: go test ./pkg/...
