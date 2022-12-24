@@ -6,10 +6,9 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/threeal/threeal-bot/pkg/schema"
 	"github.com/threeal/threeal-bot/pkg/tcp"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 func TestEchoServer(t *testing.T) {
@@ -18,10 +17,9 @@ func TestEchoServer(t *testing.T) {
 	schema.RegisterEchoServer(server, &EchoServer{})
 	go func() { server.Serve() }()
 	time.Sleep(30 * time.Millisecond)
-	conn, err := grpc.Dial("localhost:50050", grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		t.Fatalf("failed to connect to 'localhost:50050': %v", err)
-	}
+	conn, err := tcp.Connect("localhost:50050")
+	require.NoError(t, err)
+	defer conn.Close()
 	client := schema.NewEchoClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
