@@ -28,3 +28,15 @@ A personal multi-purpose bot written in [Go](https://go.dev/).
   ```sh
   go run ./cmd/backend/main.go
   ```
+
+### CLI Client
+
+- (Optional) Set address and port of the target backend server (default is `localhost:50051`).
+  ```sh
+  export THREEAL_BOT_ADDR='192.168.10.10:50052'
+  ```
+  > You must specify this if backend server is not ran locally or not using the default port.
+- Run CLI client.
+  ```sh
+  go run ./cmd/client/main.go --help
+  ```
