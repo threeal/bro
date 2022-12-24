@@ -2,25 +2,23 @@ package cli
 
 import (
 	"context"
-	"net"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/threeal/threeal-bot/pkg/schema"
 	"github.com/threeal/threeal-bot/pkg/service"
+	"github.com/threeal/threeal-bot/pkg/tcp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 func TestEchoClient(t *testing.T) {
-	lis, err := net.Listen("tcp", ":50050")
-	if err != nil {
-		t.Fatalf("failed to listen to ':50050': %v", err)
-	}
-	server := grpc.NewServer()
+	server, err := tcp.NewServer(":50050")
+	assert.NoError(t, err)
 	schema.RegisterEchoServer(server, &service.EchoServer{})
-	go func() { server.Serve(lis) }()
-	time.Sleep(100 * time.Millisecond)
+	go func() { server.Serve() }()
+	time.Sleep(30 * time.Millisecond)
 	conn, err := grpc.Dial("localhost:50050", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		t.Fatalf("failed to connect to 'localhost:50050': %v", err)
