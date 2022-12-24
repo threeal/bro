@@ -1,14 +1,18 @@
 package tcp
 
 import (
+	"strconv"
 	"testing"
 
+	"github.com/phayes/freeport"
 	"github.com/stretchr/testify/require"
 )
 
 func TestServer(t *testing.T) {
 	t.Run("NewServer", func(t *testing.T) {
-		server, err := NewServer(":50050")
+		port, err := freeport.GetFreePort()
+		require.NoError(t, err)
+		server, err := NewServer(":" + strconv.Itoa(port))
 		require.NoError(t, err)
 		require.NotNil(t, server)
 		t.Run("Serve", func(t *testing.T) {

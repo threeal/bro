@@ -2,9 +2,11 @@ package cli
 
 import (
 	"context"
+	"strconv"
 	"testing"
 	"time"
 
+	"github.com/phayes/freeport"
 	"github.com/stretchr/testify/require"
 	"github.com/threeal/threeal-bot/pkg/schema"
 	"github.com/threeal/threeal-bot/pkg/service"
@@ -12,13 +14,15 @@ import (
 )
 
 func TestEchoClient(t *testing.T) {
-	server, err := tcp.NewServer(":50050")
+	port, err := freeport.GetFreePort()
+	require.NoError(t, err)
+	server, err := tcp.NewServer(":" + strconv.Itoa(port))
 	require.NoError(t, err)
 	schema.RegisterEchoServer(server, &service.EchoServer{})
 	go func() { server.Serve() }()
 	defer server.Stop()
 	time.Sleep(30 * time.Millisecond)
-	conn, err := tcp.Connect("localhost:50050")
+	conn, err := tcp.Connect("localhost:" + strconv.Itoa(port))
 	require.NoError(t, err)
 	defer conn.Close()
 	client := NewEchoClient(conn)
