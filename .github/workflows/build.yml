@@ -14,8 +14,8 @@ jobs:
       - name: Install Protobuf
         run: sudo snap install protobuf --classic
 
-      - name: Generate sources from proto files
-        run: make proto
+      - name: Generate sources
+        run: go generate ./pkg/...
 
       - name: Build this project
         run: go build ./cmd/...
