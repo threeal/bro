@@ -17,7 +17,7 @@ func TestServer(t *testing.T) {
 		t.Run("Serve", func(t *testing.T) {
 			res := make(chan error)
 			go func() { res <- server.Serve() }()
-			server.server.GracefulStop()
+			server.Srv.GracefulStop()
 			err = <-res
 			if !strings.Contains(err.Error(), "the server has been stopped") {
 				t.Fatalf("failed during serving the server: %v", err)
