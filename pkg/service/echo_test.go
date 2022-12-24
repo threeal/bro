@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/threeal/threeal-bot/pkg/schema"
 	"github.com/threeal/threeal-bot/pkg/tcp"
@@ -13,9 +12,10 @@ import (
 
 func TestEchoServer(t *testing.T) {
 	server, err := tcp.NewServer(":50050")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	schema.RegisterEchoServer(server, &EchoServer{})
 	go func() { server.Serve() }()
+	defer server.Stop()
 	time.Sleep(30 * time.Millisecond)
 	conn, err := tcp.Connect("localhost:50050")
 	require.NoError(t, err)
