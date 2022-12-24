@@ -30,11 +30,7 @@ func TestEchoServer(t *testing.T) {
 	t.Run("CallEcho", func(t *testing.T) {
 		msg := schema.Message{Message: "Hello world!"}
 		res, err := client.Echo(ctx, &msg)
-		if err != nil {
-			t.Fatalf("failed to call echo rpc: %v", err)
-		}
-		if res.GetMessage() != msg.GetMessage() {
-			t.Fatalf("expected '%s', got: %s", msg.GetMessage(), res.GetMessage())
-		}
+		require.NoError(t, err)
+		require.Equal(t, msg.GetMessage(), res.GetMessage())
 	})
 }
