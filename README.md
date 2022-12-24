@@ -15,3 +15,16 @@ A personal multi-purpose bot written in [Go](https://go.dev/).
   ```sh
   go build ./cmd/...
   ```
+
+## Usage
+
+### Backend Server
+
+- (Optional) Set listen address and port of the TCP server (default is `:50051`).
+  ```sh
+  export THREEAL_BOT_ADDR=':50052'
+  ```
+- Run backend server.
+  ```sh
+  go run ./cmd/backend/main.go
+  ```
