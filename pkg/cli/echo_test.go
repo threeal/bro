@@ -2,29 +2,29 @@ package cli
 
 import (
 	"context"
-	"net"
+	"strconv"
 	"testing"
 	"time"
 
+	"github.com/phayes/freeport"
+	"github.com/stretchr/testify/require"
 	"github.com/threeal/threeal-bot/pkg/schema"
 	"github.com/threeal/threeal-bot/pkg/service"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"github.com/threeal/threeal-bot/pkg/tcp"
 )
 
 func TestEchoClient(t *testing.T) {
-	lis, err := net.Listen("tcp", ":50050")
-	if err != nil {
-		t.Fatalf("failed to listen to ':50050': %v", err)
-	}
-	server := grpc.NewServer()
+	port, err := freeport.GetFreePort()
+	require.NoError(t, err)
+	server, err := tcp.NewServer(":" + strconv.Itoa(port))
+	require.NoError(t, err)
 	schema.RegisterEchoServer(server, &service.EchoServer{})
-	go func() { server.Serve(lis) }()
-	time.Sleep(100 * time.Millisecond)
-	conn, err := grpc.Dial("localhost:50050", grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		t.Fatalf("failed to connect to 'localhost:50050': %v", err)
-	}
+	go func() { server.Serve() }()
+	defer server.Stop()
+	time.Sleep(30 * time.Millisecond)
+	conn, err := tcp.Connect("localhost:" + strconv.Itoa(port))
+	require.NoError(t, err)
+	defer conn.Close()
 	client := NewEchoClient(conn)
 	t.Run("Call", func(t *testing.T) {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)

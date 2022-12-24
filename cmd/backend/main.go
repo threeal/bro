@@ -2,25 +2,22 @@ package main
 
 import (
 	"log"
-	"net"
 
 	"github.com/threeal/threeal-bot/pkg/schema"
 	"github.com/threeal/threeal-bot/pkg/service"
+	"github.com/threeal/threeal-bot/pkg/tcp"
 	"github.com/threeal/threeal-bot/pkg/utils"
-
-	"google.golang.org/grpc"
 )
 
 func main() {
 	addr := utils.GetEnvOrDefault("THREEAL_BOT_ADDR", ":50051")
-	lis, err := net.Listen("tcp", addr)
+	server, err := tcp.NewServer(addr)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatalf("failed to create a new server on `%s`: %v", addr, err)
 	}
-	server := grpc.NewServer()
 	schema.RegisterEchoServer(server, &service.EchoServer{})
-	log.Printf("server listening at %v", lis.Addr())
-	if err := server.Serve(lis); err != nil {
+	log.Printf("server listening at %v", server.Addr())
+	if err := server.Serve(); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
