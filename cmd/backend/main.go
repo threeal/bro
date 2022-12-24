@@ -15,8 +15,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create a new server on `%s`: %v", addr, err)
 	}
-	schema.RegisterEchoServer(server.Srv, &service.EchoServer{})
-	log.Printf("server listening at %v", server.Lis.Addr())
+	schema.RegisterEchoServer(server, &service.EchoServer{})
+	log.Printf("server listening at %v", server.Addr())
 	if err := server.Serve(); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

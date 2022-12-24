@@ -7,12 +7,12 @@ import (
 )
 
 type Server struct {
-	Lis net.Listener
-	Srv *grpc.Server
+	*grpc.Server
+	net.Listener
 }
 
 func (s *Server) Serve() error {
-	return s.Srv.Serve(s.Lis)
+	return s.Server.Serve(s.Listener)
 }
 
 func NewServer(address string) (*Server, error) {
@@ -20,6 +20,6 @@ func NewServer(address string) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	server := &Server{Lis: lis, Srv: grpc.NewServer()}
+	server := &Server{grpc.NewServer(), lis}
 	return server, nil
 }
