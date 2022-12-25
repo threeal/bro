@@ -3,17 +3,15 @@ package utils
 import (
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetEnvOrDefault(t *testing.T) {
 	os.Setenv("FOO", "foo")
 	res := GetEnvOrDefault("FOO", "default")
-	if res != "foo" {
-		t.Errorf("expected 'foo', got: %s", res)
-	}
+	require.Equal(t, "foo", res)
 	os.Unsetenv("FOO")
 	res = GetEnvOrDefault("FOO", "default")
-	if res != "default" {
-		t.Errorf("expected 'default', got: %s", res)
-	}
+	require.Equal(t, "default", res)
 }
