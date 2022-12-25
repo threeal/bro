@@ -1,6 +1,7 @@
 # Threeal Bot
 
 [![build status](https://img.shields.io/github/actions/workflow/status/threeal/threeal-bot/build.yml?branch=main)](https://github.com/threeal/threeal-bot/actions/workflows/build.yml)
+[![test result](https://img.shields.io/testspace/pass-ratio/threeal/threeal:threeal-bot/main)](https://threeal.testspace.com/projects/threeal:threeal-bot)
 
 A personal multi-purpose bot written in [Go](https://go.dev/).
 
