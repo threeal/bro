@@ -28,3 +28,17 @@ jobs:
 
       - name: Generate summary of test results
         run: ~/go/bin/gotestsum --junitfile build/test.xml
+
+      - name: Download Testspace client
+        run: curl -fsSL https://testspace-client.s3.amazonaws.com/testspace-linux.tgz | tar -zxvf- -C build
+
+      - name: Configure Testspace client
+        working-directory: build
+        run: |
+          ./testspace config url ${{ secrets.TESTSPACE_URL }}
+          ./testspace config project ${{ secrets.TESTSPACE_PROJECT }}
+          ./testspace config space ${{ github.ref_name }}
+
+      - name: Send summary of test results to Testspace
+        working-directory: build
+        run: ./testspace [Tests]"test.xml"
