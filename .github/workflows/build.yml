@@ -27,4 +27,4 @@ jobs:
         run: go install gotest.tools/gotestsum@latest
 
       - name: Generate summary of test results
-        run: gotestsum --junitfile build/test.xml
+        run: ~/go/bin/gotestsum --junitfile build/test.xml
