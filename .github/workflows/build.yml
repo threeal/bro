@@ -22,3 +22,9 @@ jobs:
 
       - name: Run tests
         run: go test ./pkg/...
+
+      - name: Install gotestsum
+        run: go install gotest.tools/gotestsum@latest
+
+      - name: Generate summary of test results
+        run: gotestsum --junitfile build/test.xml
