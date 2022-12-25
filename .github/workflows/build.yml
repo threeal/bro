@@ -21,7 +21,7 @@ jobs:
         run: go build ./cmd/...
 
       - name: Run tests
-        run: go test -covermode atomic -coverprofile=coverage ./pkg/...
+        run: go test -covermode atomic -coverprofile=profile.cov ./pkg/...
 
       - name: Install gotestsum
         run: go install gotest.tools/gotestsum@latest
@@ -42,3 +42,8 @@ jobs:
       - name: Send summary of test results to Testspace
         working-directory: build
         run: ./testspace [Tests]"test.xml"
+
+      - name: Send code coverage info to Coveralls
+        uses: shogo82148/actions-goveralls@v1.6.0
+        with:
+          path-to-profile: profile.cov
