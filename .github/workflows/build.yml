@@ -7,10 +7,8 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout this repository
         uses: actions/checkout@v3.3.0
-        with:
-          fetch-depth: 0
 
       - name: Install Protobuf
         run: sudo snap install protobuf --classic
