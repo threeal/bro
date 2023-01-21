@@ -45,6 +45,7 @@ jobs:
 
   send-coverage-info:
     needs: build-and-test
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Download the artifact of code coverage info
@@ -59,6 +60,7 @@ jobs:
 
   send-test-results:
     needs: build-and-test
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Download the artifact of test results
