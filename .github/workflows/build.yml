@@ -1,15 +1,15 @@
 name: build
 on:
   workflow_dispatch:
+  pull_request:
   push:
+    branches: [main]
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout this repository
         uses: actions/checkout@v3.3.0
-        with:
-          fetch-depth: 0
 
       - name: Install Protobuf
         run: sudo snap install protobuf --classic
@@ -23,27 +23,59 @@ jobs:
       - name: Run tests
         run: go test -covermode atomic -coverprofile=profile.cov ./pkg/...
 
+      - name: Upload the code coverage info as an artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: coverage-info
+          path: |
+            pkg/**/*.go
+            go.mod
+            profile.cov
+
       - name: Install gotestsum
         run: go install gotest.tools/gotestsum@latest
 
       - name: Generate summary of test results
         run: ~/go/bin/gotestsum --junitfile build/test.xml
 
-      - name: Download Testspace client
-        run: curl -fsSL https://testspace-client.s3.amazonaws.com/testspace-linux.tgz | tar -zxvf- -C build
+      - name: Upload test results as an artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: test-results
+          path: build/test.xml
 
-      - name: Configure Testspace client
-        working-directory: build
-        run: |
-          ./testspace config url ${{ secrets.TESTSPACE_URL }}
-          ./testspace config project ${{ secrets.TESTSPACE_PROJECT }}
-          ./testspace config space ${{ github.ref_name }}
+  send-coverage-info:
+    needs: build-and-test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the artifact of code coverage info
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: coverage-info
 
-      - name: Send summary of test results to Testspace
-        working-directory: build
-        run: ./testspace [Tests]"test.xml"
-
-      - name: Send code coverage info to Coveralls
+      - name: Send the code coverage info to Coveralls
         uses: shogo82148/actions-goveralls@v1.6.0
         with:
           path-to-profile: profile.cov
+
+  send-test-results:
+    needs: build-and-test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the artifact of test results
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: test-results
+
+      - name: Download a Testspace client
+        run: curl -fsSL https://testspace-client.s3.amazonaws.com/testspace-linux.tgz | tar -zxvf-
+
+      - name: Configure the Testspace client
+        run: |
+          ./testspace config url ${{ secrets.TESTSPACE_URL }}
+          ./testspace config project ${{ secrets.TESTSPACE_PROJECT }}
+
+      - name: Send test results to Testspace
+        run: ./testspace [Tests]"test.xml"
