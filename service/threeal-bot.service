@@ -1,0 +1,15 @@
+#/lib/systemd/system/threeal-bot.service
+[Unit]
+Description=Threeal Bot Service
+ConditionPathExists=<pathexists>
+
+[Service]
+User=<user>
+Group=<group>
+Restart=always
+RestartSec=3
+WorkingDirectory=<workdir>
+ExecStart=<execstart>
+
+[Install]
+WantedBy=multi-user.target
