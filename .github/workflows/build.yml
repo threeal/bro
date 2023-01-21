@@ -28,21 +28,33 @@ jobs:
       - name: Generate summary of test results
         run: ~/go/bin/gotestsum --junitfile build/test.xml
 
-      - name: Download Testspace client
-        run: curl -fsSL https://testspace-client.s3.amazonaws.com/testspace-linux.tgz | tar -zxvf- -C build
-
-      - name: Configure Testspace client
-        working-directory: build
-        run: |
-          ./testspace config url ${{ secrets.TESTSPACE_URL }}
-          ./testspace config project ${{ secrets.TESTSPACE_PROJECT }}
-          ./testspace config space ${{ github.ref_name }}
-
-      - name: Send summary of test results to Testspace
-        working-directory: build
-        run: ./testspace [Tests]"test.xml"
+      - name: Upload test results as an artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: test-results
+          path: build/test.xml
 
       - name: Send code coverage info to Coveralls
         uses: shogo82148/actions-goveralls@v1.6.0
         with:
           path-to-profile: profile.cov
+
+  send-test-results:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the artifact of test results
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: test-results
+
+      - name: Download a Testspace client
+        run: curl -fsSL https://testspace-client.s3.amazonaws.com/testspace-linux.tgz | tar -zxvf-
+
+      - name: Configure the Testspace client
+        run: |
+          ./testspace config url ${{ secrets.TESTSPACE_URL }}
+          ./testspace config project ${{ secrets.TESTSPACE_PROJECT }}
+          ./testspace config space ${{ github.ref_name }}
+
+      - name: Send test results to Testspace
+        run: ./testspace [Tests]"test.xml"
