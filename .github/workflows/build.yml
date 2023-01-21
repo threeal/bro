@@ -55,7 +55,6 @@ jobs:
         run: |
           ./testspace config url ${{ secrets.TESTSPACE_URL }}
           ./testspace config project ${{ secrets.TESTSPACE_PROJECT }}
-          ./testspace config space ${{ github.ref_name }}
 
       - name: Send test results to Testspace
         run: ./testspace [Tests]"test.xml"
