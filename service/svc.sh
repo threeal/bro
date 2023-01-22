@@ -5,8 +5,6 @@ ROOTPROJECTPATH="$(
     pwd -P
 )"
 
-echo $ROOTPROJECTPATH
-
 function install {
     path=$1
     if [ -z "$1" ]; then
@@ -18,13 +16,15 @@ function install {
         exit
     fi
 
+    go_path=$(which go)
+
     workdir=$ROOTPROJECTPATH
 
-    execstart="go run $workdir/cmd/backend/main.go"
+    user=$(logname)
 
     echo "Installing service..."
 
-    sed -e "s@<user>@$USER@" -e "s@<group>@$USER@" -e "s@<workdir>@$workdir@" -e "s@<pathexists>@$workdir@" -e "s@<execstart>@$execstart@" service/threeal-bot.service >threeal-bot.service
+    sed -e "s@<user>@$user@g" -e "s@<workdir>@$workdir@g" -e "s@<goabsolutepath>@$go_path@g" service/threeal-bot.service >threeal-bot.service
 
     mv threeal-bot.service $path
 
@@ -37,14 +37,14 @@ function uninstall {
         path="/lib/systemd/system/threeal-bot.service"
     fi
 
-    if [ -e "$path" ]; then
-        echo "Uninstalling service..."
-        rm $path
-        echo "Done uninstalling service"
+    if [ ! -e "$path" ]; then
+        echo "Service is not installed"
         exit
     fi
 
-    echo "Service is not installed"
+    echo "Uninstalling service..."
+    rm $path
+    echo "Done uninstalling service"
 }
 
 function help {
