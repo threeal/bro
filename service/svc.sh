@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
+set -e
+
+error() {
+    local parent_lineno="$1"
+    local message="$2"
+    local code="${3:-1}"
+    if [[ -n "$message" ]]; then
+        echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
+    else
+        echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
+    fi
+    exit "${code}"
+}
+trap 'error ${LINENO}' ERR
+
 ROOTPROJECTPATH="$(
     cd -- "$(dirname "$0")/.." >/dev/null 2>&1
     pwd -P
