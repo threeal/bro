@@ -16,7 +16,7 @@ function error {
 trap 'error ${LINENO}' ERR
 
 ROOTPROJECTPATH="$(
-    cd -- "$(dirname "$0")/.." >/dev/null 2>&1
+    cd -- "$(dirname "$0")" >/dev/null 2>&1
     pwd -P
 )"
 
@@ -40,7 +40,7 @@ function install {
     workdir=$ROOTPROJECTPATH
     user=$(logname)
     echo "Installing service..."
-    sed -e "s@<user>@$user@g" -e "s@<workdir>@$workdir@g" -e "s@<goabsolutepath>@$go_path@g" service/threeal-bot.service >/tmp/threeal-bot.service
+    sed -e "s@<user>@$user@g" -e "s@<workdir>@$workdir@g" -e "s@<goabsolutepath>@$go_path@g" $workdir/service/threeal-bot.service >/tmp/threeal-bot.service
     sudo mv /tmp/threeal-bot.service /lib/systemd/system/$service_name
     sudo systemctl enable $service_name
     echo -e "Done installing service: ${BGreen}$service_name${NC}"
