@@ -10,25 +10,20 @@ function install {
     if [ -z "$1" ]; then
         path="/lib/systemd/system"
     fi
-
     if [ -e "$path/threeal-bot.service" ]; then
         echo "Service is already installed"
-        exit
+        exit 1
     fi
-
-    go_path=$(which go)
-
+    go_path=$(which go 2>/dev/null)
+    if [ $? -ne 0 ]; then
+        echo "Go is not installed, please install go (https://go.dev/doc/install)"
+        exit 1
+    fi
     workdir=$ROOTPROJECTPATH
-
     user=$(logname)
-
     echo "Installing service..."
-
-    sed -e "s@<user>@$user@g" -e "s@<workdir>@$workdir@g" -e "s@<goabsolutepath>@$go_path@g" service/threeal-bot.service >threeal-bot.service
-
-    mv threeal-bot.service $path
-
-    echo "Done installing service"
+    sed -e "s@<user>@$user@g" -e "s@<workdir>@$workdir@g" -e "s@<goabsolutepath>@$go_path@g" service/threeal-bot.service >/tmp/threeal-bot.service
+    (mv /tmp/threeal-bot.service $path && echo "Done installing service") || (rm /tmp/threeal-bot.service && exit 1)
 }
 
 function uninstall {
@@ -36,15 +31,12 @@ function uninstall {
     if [ -z "$1" ]; then
         path="/lib/systemd/system/threeal-bot.service"
     fi
-
     if [ ! -e "$path" ]; then
         echo "Service is not installed"
-        exit
+        exit 1
     fi
-
     echo "Uninstalling service..."
-    rm $path
-    echo "Done uninstalling service"
+    (rm $path && echo "Done uninstalling service") || (exit 1)
 }
 
 function help {
