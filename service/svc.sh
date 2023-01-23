@@ -2,7 +2,7 @@
 
 set -e
 
-error() {
+function error {
     local parent_lineno="$1"
     local message="$2"
     local code="${3:-1}"
