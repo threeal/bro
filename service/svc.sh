@@ -5,17 +5,20 @@ ROOTPROJECTPATH="$(
     pwd -P
 )"
 
+BGreen='\033[1;32m' # Green
+NC='\033[0m'        # No Color
+
 function install {
-    path=$1
+    service_name=$1
     if [ -z "$1" ]; then
-        path="/lib/systemd/system"
+        service_name="threeal-bot.service"
     fi
-    if [ -e "$path/threeal-bot.service" ]; then
-        echo "Service is already installed"
+    if [ -e "/lib/systemd/system/$service_name" ]; then
+        echo -e "Service: ${BGreen}$service_name${NC} is already installed"
         exit 1
     fi
-    go_path=$(which go 2>/dev/null)
-    if [ $? -ne 0 ]; then
+    go_path=$(which go 2>/dev/null || :)
+    if [ -z "$go_path" ]; then
         echo "Go is not installed, please install go (https://go.dev/doc/install)"
         exit 1
     fi
@@ -23,20 +26,25 @@ function install {
     user=$(logname)
     echo "Installing service..."
     sed -e "s@<user>@$user@g" -e "s@<workdir>@$workdir@g" -e "s@<goabsolutepath>@$go_path@g" service/threeal-bot.service >/tmp/threeal-bot.service
-    (mv /tmp/threeal-bot.service $path && echo "Done installing service") || (rm /tmp/threeal-bot.service && exit 1)
+    sudo mv /tmp/threeal-bot.service /lib/systemd/system/$service_name
+    sudo systemctl enable $service_name
+    echo -e "Done installing service: ${BGreen}$service_name${NC}"
 }
 
 function uninstall {
-    path=$1
+    service_name=$1
     if [ -z "$1" ]; then
-        path="/lib/systemd/system/threeal-bot.service"
+        service_name="threeal-bot.service"
     fi
-    if [ ! -e "$path" ]; then
-        echo "Service is not installed"
+    if [ ! -e "/lib/systemd/system/$service_name" ]; then
+        echo -e "Service: ${BGreen}$service_name${NC} is not installed"
         exit 1
     fi
     echo "Uninstalling service..."
-    (rm $path && echo "Done uninstalling service") || (exit 1)
+    sudo systemctl stop $service_name
+    sudo systemctl disable $service_name
+    sudo rm /lib/systemd/system/$service_name
+    echo -e "Done uninstalling service: ${BGreen}$service_name${NC}"
 }
 
 function help {
@@ -58,25 +66,25 @@ EOF
 
 function help_install {
     cat <<EOF
-Usage: ./svc.sh install [config path]
+Usage: ./svc.sh install [service name]
 
 This command installs the bot's configuration to system.
 
-If config path is given, the configuration files is copied to that path.
+If service name is given, the configuration files is generated with given name.
 
-If no config path given, the configuration file will be copied to /lib/systemd/system
+If no service name given, the service will be named "threeal-bot.service"
 EOF
 }
 
 function help_uninstall {
     cat <<EOF
-Usage: ./svc.sh uninstall [config path]
+Usage: ./svc.sh uninstall [service name]
 
 This command removes the bot's configuration from system.
 
-If config path is given, the configuration files is removed from the given path.
+If service name is given, the configuration files is removed from the given service_name.
 
-If no config path given, the configuration file will be removed from /lib/systemd/system
+If no service name given, the configuration file will be removed from /lib/systemd/system/threeal-bot.service
 EOF
 }
 
