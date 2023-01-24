@@ -46,7 +46,7 @@ jobs:
 
   send-coverage-info:
     needs: build-and-test
-    if: github.event_name == 'push'
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Download the artifact of code coverage info
@@ -61,7 +61,7 @@ jobs:
 
   send-test-results:
     needs: build-and-test
-    if: github.event_name == 'push'
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Download the artifact of test results
@@ -73,9 +73,7 @@ jobs:
         run: curl -fsSL https://testspace-client.s3.amazonaws.com/testspace-linux.tgz | tar -zxvf-
 
       - name: Configure the Testspace client
-        run: |
-          ./testspace config url ${{ secrets.TESTSPACE_URL }}
-          ./testspace config project ${{ secrets.TESTSPACE_PROJECT }}
+        run: ./testspace config url ${{ secrets.TESTSPACE_URL }}
 
       - name: Send test results to Testspace
         run: ./testspace [Tests]"test.xml"
