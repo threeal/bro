@@ -1,10 +1,10 @@
-# Threeal Bot
+# Bro
 
-[![build status](https://img.shields.io/github/actions/workflow/status/threeal/threeal-bot/build.yml?branch=main)](https://github.com/threeal/threeal-bot/actions/workflows/build.yml)
-[![tests status](https://img.shields.io/testspace/pass-ratio/threeal/threeal:threeal-bot/main)](https://threeal.testspace.com/projects/threeal:threeal-bot)
-[![coverage status](https://img.shields.io/coveralls/github/threeal/threeal-bot/main)](https://coveralls.io/github/threeal/threeal-bot)
+[![build status](https://img.shields.io/github/actions/workflow/status/threeal/bro/build.yml?branch=main)](https://github.com/threeal/bro/actions/workflows/build.yml)
+[![tests status](https://img.shields.io/testspace/pass-ratio/threeal/threeal:bro/main)](https://threeal.testspace.com/projects/threeal:bro)
+[![coverage status](https://img.shields.io/coveralls/github/threeal/bro/main)](https://coveralls.io/github/threeal/bro)
 
-A personal multi-purpose bot written in [Go](https://go.dev/).
+Your friendly, personal, multi-purpose [buddy](https://en.wiktionary.org/wiki/buddy) written in [Go](https://go.dev/).
 
 ## Build
 
