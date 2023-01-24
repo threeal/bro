@@ -6,9 +6,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/threeal/threeal-bot/pkg/cli"
-	"github.com/threeal/threeal-bot/pkg/tcp"
-	"github.com/threeal/threeal-bot/pkg/utils"
+	"github.com/threeal/bro/pkg/cli"
+	"github.com/threeal/bro/pkg/tcp"
+	"github.com/threeal/bro/pkg/utils"
 
 	"google.golang.org/grpc"
 )
@@ -22,7 +22,7 @@ func getClient(key string, conn grpc.ClientConnInterface) cli.Client {
 
 func main() {
 	flag.Parse()
-	addr := utils.GetEnvOrDefault("THREEAL_BOT_ADDR", "localhost:50051")
+	addr := utils.GetEnvOrDefault("BRO_ADDR", "localhost:50051")
 	conn, err := tcp.Connect(addr)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)

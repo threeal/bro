@@ -1,10 +1,10 @@
-# Threeal Bot
+# Bro
 
-[![build status](https://img.shields.io/github/actions/workflow/status/threeal/threeal-bot/build.yml?branch=main)](https://github.com/threeal/threeal-bot/actions/workflows/build.yml)
-[![tests status](https://img.shields.io/testspace/pass-ratio/threeal/threeal:threeal-bot/main)](https://threeal.testspace.com/projects/threeal:threeal-bot)
-[![coverage status](https://img.shields.io/coveralls/github/threeal/threeal-bot/main)](https://coveralls.io/github/threeal/threeal-bot)
+[![build status](https://img.shields.io/github/actions/workflow/status/threeal/bro/build.yml?branch=main)](https://github.com/threeal/bro/actions/workflows/build.yml)
+[![tests status](https://img.shields.io/testspace/pass-ratio/threeal/threeal:bro/main)](https://threeal.testspace.com/projects/threeal:bro)
+[![coverage status](https://img.shields.io/coveralls/github/threeal/bro/main)](https://coveralls.io/github/threeal/bro)
 
-A personal multi-purpose bot written in [Go](https://go.dev/).
+Your friendly, personal, multi-purpose [buddy](https://en.wiktionary.org/wiki/buddy) written in [Go](https://go.dev/).
 
 ## Build
 
@@ -24,7 +24,7 @@ A personal multi-purpose bot written in [Go](https://go.dev/).
 
 - (Optional) Set listen address and port of the TCP server (default is `:50051`).
   ```sh
-  export THREEAL_BOT_ADDR=':50052'
+  export BRO_ADDR=':50052'
   ```
 - Run backend server.
   ```sh
@@ -35,7 +35,7 @@ A personal multi-purpose bot written in [Go](https://go.dev/).
 
 - (Optional) Set address and port of the target backend server (default is `localhost:50051`).
   ```sh
-  export THREEAL_BOT_ADDR='192.168.10.10:50052'
+  export BRO_ADDR='192.168.10.10:50052'
   ```
   > You must specify this if backend server is not ran locally or not using the default port.
 - Run CLI client.

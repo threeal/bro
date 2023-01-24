@@ -1,6 +1,6 @@
-#/lib/systemd/system/threeal-bot.service
+#/lib/systemd/system/bro.service
 [Unit]
-Description=Threeal Bot Service
+Description=Bro backend service
 ConditionPathExists=<workdir>
 
 [Service]

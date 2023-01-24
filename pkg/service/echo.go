@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/threeal/threeal-bot/pkg/schema"
+	"github.com/threeal/bro/pkg/schema"
 )
 
 type EchoServer struct {

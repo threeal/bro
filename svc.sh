@@ -26,7 +26,7 @@ NC='\033[0m'        # No Color
 function install {
     service_name=$1
     if [ -z "$1" ]; then
-        service_name="threeal-bot.service"
+        service_name="bro.service"
     fi
     if [ -e "/lib/systemd/system/$service_name" ]; then
         echo -e "Service: ${BGreen}$service_name${NC} is already installed"
@@ -40,8 +40,8 @@ function install {
     workdir=$ROOTPROJECTPATH
     user=$(logname)
     echo "Installing service..."
-    sed -e "s@<user>@$user@g" -e "s@<workdir>@$workdir@g" -e "s@<goabsolutepath>@$go_path@g" $workdir/service/threeal-bot.service >/tmp/threeal-bot.service
-    sudo mv /tmp/threeal-bot.service /lib/systemd/system/$service_name
+    sed -e "s@<user>@$user@g" -e "s@<workdir>@$workdir@g" -e "s@<goabsolutepath>@$go_path@g" $workdir/service/bro.service >/tmp/bro.service
+    sudo mv /tmp/bro.service /lib/systemd/system/$service_name
     sudo systemctl enable $service_name
     echo -e "Done installing service: ${BGreen}$service_name${NC}"
 }
@@ -49,7 +49,7 @@ function install {
 function uninstall {
     service_name=$1
     if [ -z "$1" ]; then
-        service_name="threeal-bot.service"
+        service_name="bro.service"
     fi
     if [ ! -e "/lib/systemd/system/$service_name" ]; then
         echo -e "Service: ${BGreen}$service_name${NC} is not installed"
@@ -64,16 +64,16 @@ function uninstall {
 
 function help {
     cat <<EOF
-This is a script for managing threeal bot service
+This is a script for managing Bro backend service
 
-Usage: 
+Usage:
 
         ./svc.sh <command> [arguments]
 
 The commands are:
 
-        install     install threeal bot service
-        uninstall   uninstall threeal bot service
+        install     install Bro backend service
+        uninstall   uninstall Bro backend service
 
 Use "./svc.sh help <command>" for more information about a command.
 EOF
@@ -83,11 +83,9 @@ function help_install {
     cat <<EOF
 Usage: ./svc.sh install [service name]
 
-This command installs the bot's configuration to system.
-
+This command installs the backend's configuration to system.
 If service name is given, the configuration files is generated with given name.
-
-If no service name given, the service will be named "threeal-bot.service"
+If no service name given, the service will be named "bro.service"
 EOF
 }
 
@@ -95,11 +93,9 @@ function help_uninstall {
     cat <<EOF
 Usage: ./svc.sh uninstall [service name]
 
-This command removes the bot's configuration from system.
-
+This command removes the backend's configuration from system.
 If service name is given, the configuration files is removed from the given service_name.
-
-If no service name given, the configuration file will be removed from /lib/systemd/system/threeal-bot.service
+If no service name given, the configuration file will be removed from /lib/systemd/system/bro.service
 EOF
 }
 

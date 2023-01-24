@@ -8,8 +8,8 @@ import (
 
 	"github.com/phayes/freeport"
 	"github.com/stretchr/testify/require"
-	"github.com/threeal/threeal-bot/pkg/schema"
-	"github.com/threeal/threeal-bot/pkg/tcp"
+	"github.com/threeal/bro/pkg/schema"
+	"github.com/threeal/bro/pkg/tcp"
 )
 
 func TestEchoServer(t *testing.T) {
