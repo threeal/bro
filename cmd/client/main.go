@@ -22,7 +22,7 @@ func getClient(key string, conn grpc.ClientConnInterface) cli.Client {
 
 func main() {
 	flag.Parse()
-	addr := utils.GetEnvOrDefault("THREEAL_BOT_ADDR", "localhost:50051")
+	addr := utils.GetEnvOrDefault("BRO_ADDR", "localhost:50051")
 	conn, err := tcp.Connect(addr)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)

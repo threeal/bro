@@ -24,7 +24,7 @@ Your friendly, personal, multi-purpose [buddy](https://en.wiktionary.org/wiki/bu
 
 - (Optional) Set listen address and port of the TCP server (default is `:50051`).
   ```sh
-  export THREEAL_BOT_ADDR=':50052'
+  export BRO_ADDR=':50052'
   ```
 - Run backend server.
   ```sh
@@ -35,7 +35,7 @@ Your friendly, personal, multi-purpose [buddy](https://en.wiktionary.org/wiki/bu
 
 - (Optional) Set address and port of the target backend server (default is `localhost:50051`).
   ```sh
-  export THREEAL_BOT_ADDR='192.168.10.10:50052'
+  export BRO_ADDR='192.168.10.10:50052'
   ```
   > You must specify this if backend server is not ran locally or not using the default port.
 - Run CLI client.
