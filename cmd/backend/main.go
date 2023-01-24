@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 
-	"github.com/threeal/threeal-bot/pkg/schema"
-	"github.com/threeal/threeal-bot/pkg/service"
-	"github.com/threeal/threeal-bot/pkg/tcp"
-	"github.com/threeal/threeal-bot/pkg/utils"
+	"github.com/threeal/bro/pkg/schema"
+	"github.com/threeal/bro/pkg/service"
+	"github.com/threeal/bro/pkg/tcp"
+	"github.com/threeal/bro/pkg/utils"
 )
 
 func main() {

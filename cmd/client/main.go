@@ -6,9 +6,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/threeal/threeal-bot/pkg/cli"
-	"github.com/threeal/threeal-bot/pkg/tcp"
-	"github.com/threeal/threeal-bot/pkg/utils"
+	"github.com/threeal/bro/pkg/cli"
+	"github.com/threeal/bro/pkg/tcp"
+	"github.com/threeal/bro/pkg/utils"
 
 	"google.golang.org/grpc"
 )
