@@ -73,9 +73,7 @@ jobs:
         run: curl -fsSL https://testspace-client.s3.amazonaws.com/testspace-linux.tgz | tar -zxvf-
 
       - name: Configure the Testspace client
-        run: |
-          ./testspace config url ${{ secrets.TESTSPACE_URL }}
-          ./testspace config project ${{ secrets.TESTSPACE_PROJECT }}
+        run: ./testspace config url ${{ secrets.TESTSPACE_URL }}
 
       - name: Send test results to Testspace
         run: ./testspace [Tests]"test.xml"
