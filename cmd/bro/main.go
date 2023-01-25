@@ -22,7 +22,8 @@ func getClient(key string, conn grpc.ClientConnInterface) cli.Client {
 
 func main() {
 	flag.Parse()
-	addr := utils.GetEnvOrDefault("BRO_ADDR", "localhost:50051")
+	clientConfig := utils.InitializeClientConfig()
+	addr := *clientConfig.BackendAddr
 	conn, err := tcp.Connect(addr)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
