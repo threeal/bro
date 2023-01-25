@@ -29,24 +29,24 @@ type ClientConfig struct {
 	BackendAddr *string `json:"backend_addr"`
 }
 
-func getHomeDirectory() (*string) {
+func getHomeDirectory() *string {
 	homeDir, err := os.UserHomeDir()
-	if (err != nil) {
+	if err != nil {
 		log.Fatalf("failed to determine home directory: %v", err)
 	}
 	return &homeDir
 }
 
 func (c *BackendConfig) Read() error {
-    return readConfigFromFile(c, "backend_config.json")
+	return readConfigFromFile(c, "backend_config.json")
 }
 
 func (c *ClientConfig) Read() error {
-    return readConfigFromFile(c, "config.json")
+	return readConfigFromFile(c, "config.json")
 }
 
 func (c *BackendConfig) Write() error {
-    return writeConfigToFile(c, "backend_config.json")
+	return writeConfigToFile(c, "backend_config.json")
 }
 
 func (c *ClientConfig) Write() error {
@@ -77,21 +77,21 @@ func (c *ClientConfig) init() {
 	}
 }
 
-func NewBackendConfig() (*BackendConfig) {
+func NewBackendConfig() *BackendConfig {
 	return &BackendConfig{ListenAddr: nil}
 }
 
-func NewClientConfig() (*ClientConfig) {
+func NewClientConfig() *ClientConfig {
 	return &ClientConfig{BackendAddr: nil}
 }
 
-func InitializeBackendConfig() (*BackendConfig) {
+func InitializeBackendConfig() *BackendConfig {
 	backendConfig := NewBackendConfig()
 	initializeConfig(backendConfig)
 	return backendConfig
 }
 
-func InitializeClientConfig() (*ClientConfig) {
+func InitializeClientConfig() *ClientConfig {
 	clientConfig := NewClientConfig()
 	initializeConfig(clientConfig)
 	return clientConfig
@@ -126,7 +126,7 @@ func readConfigFromFile(c Config, configName string) error {
 }
 
 func createFolder(path string) error {
-	if _, err := os.Stat(BRO_CONFIG_DIR); os.IsNotExist(err) { 
+	if _, err := os.Stat(BRO_CONFIG_DIR); os.IsNotExist(err) {
 		return os.MkdirAll(BRO_CONFIG_DIR, 0700)
 	}
 	return nil
