@@ -28,7 +28,7 @@ Your friendly, personal, multi-purpose [buddy](https://en.wiktionary.org/wiki/bu
   ```
 - Run backend server.
   ```sh
-  go run ./cmd/backend/main.go
+  go run ./cmd/bro-backend/main.go
   ```
 
 ### CLI Client
