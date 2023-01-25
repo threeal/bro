@@ -40,5 +40,5 @@ Your friendly, personal, multi-purpose [buddy](https://en.wiktionary.org/wiki/bu
   > You must specify this if backend server is not ran locally or not using the default port.
 - Run CLI client.
   ```sh
-  go run ./cmd/client/main.go --help
+  go run ./cmd/bro/main.go --help
   ```
