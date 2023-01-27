@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/threeal/bro/pkg/bro"
 	"github.com/threeal/bro/pkg/cli"
 	"github.com/threeal/bro/pkg/tcp"
 	"github.com/threeal/bro/pkg/utils"
@@ -22,8 +23,8 @@ func getClient(key string, conn grpc.ClientConnInterface) cli.Client {
 
 func main() {
 	flag.Parse()
-	clientConfig := utils.InitializeClientConfig()
-	addr := *clientConfig.BackendAddr
+	config := utils.InitializeConfig(&bro.Config{}).(*bro.Config)
+	addr := *config.BackendAddr
 	conn, err := tcp.Connect(addr)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)

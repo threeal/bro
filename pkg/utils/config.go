@@ -1,9 +1,7 @@
 package utils
 
 import (
-	"bufio"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -15,15 +13,7 @@ import (
 type Config interface {
 	Read() error
 	Write() error
-	init() error
-}
-
-type BackendConfig struct {
-	ListenAddr *string `json:"listen_addr"`
-}
-
-type ClientConfig struct {
-	BackendAddr *string `json:"backend_addr"`
+	Init() error
 }
 
 func getHomeDir() (*string, error) {
@@ -43,72 +33,9 @@ func getConfigDir() (string, error) {
 	return configDir, err
 }
 
-func (c *BackendConfig) Read() error {
-	return readConfigFromFile(c, "backend_config.json")
-}
-
-func (c *ClientConfig) Read() error {
-	return readConfigFromFile(c, "config.json")
-}
-
-func (c *BackendConfig) Write() error {
-	return writeConfigToFile(c, "backend_config.json")
-}
-
-func (c *ClientConfig) Write() error {
-	return writeConfigToFile(c, "config.json")
-}
-
-func (c *BackendConfig) init() error {
-	if c.ListenAddr == nil {
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Print(color.HiBlackString("question"), " listen address ", color.HiGreenString("(:320)"), ": ")
-		text, err := reader.ReadString('\n')
-		if err != nil {
-			return err
-		}
-		if text == "\n" {
-			text = ":320"
-		}
-		c.ListenAddr = &text
-	}
-	return nil
-}
-
-func (c *ClientConfig) init() error {
-	if c.BackendAddr == nil {
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Print(color.HiBlackString("question"), " backend address ", color.HiGreenString("(localhost:320)"), ": ")
-		text, err := reader.ReadString('\n')
-		if err != nil {
-			return err
-		}
-		if text == "\n" {
-			text = "localhost:320"
-		}
-		c.BackendAddr = &text
-	}
-	return nil
-}
-
-func NewBackendConfig() *BackendConfig {
-	return &BackendConfig{ListenAddr: nil}
-}
-
-func NewClientConfig() *ClientConfig {
-	return &ClientConfig{BackendAddr: nil}
-}
-
-func InitializeBackendConfig() *BackendConfig {
-	backendConfig := NewBackendConfig()
-	initializeConfig(backendConfig)
-	return backendConfig
-}
-
-func InitializeClientConfig() *ClientConfig {
-	clientConfig := NewClientConfig()
-	initializeConfig(clientConfig)
-	return clientConfig
+func InitializeConfig(c Config) Config {
+	initializeConfig(c)
+	return c
 }
 
 func initializeConfig(c Config) {
@@ -117,11 +44,11 @@ func initializeConfig(c Config) {
 			log.Fatalf("failed to initialize config: %v", err)
 		}
 	}
-	c.init()
+	c.Init()
 	c.Write()
 }
 
-func writeConfigToFile(c Config, configName string) error {
+func WriteConfigToFile(c Config, configName string) error {
 	file, err := json.MarshalIndent(c, "", "  ")
 	if err != nil {
 		log.Printf("%v failed to marshal json: %v", color.RedString("ERROR:"), err)
@@ -137,7 +64,7 @@ func writeConfigToFile(c Config, configName string) error {
 	return ioutil.WriteFile(configPath, file, 0644)
 }
 
-func readConfigFromFile(c Config, configName string) error {
+func ReadConfigFromFile(c Config, configName string) error {
 	configDir, err := getConfigDir()
 	if err != nil {
 		return err
