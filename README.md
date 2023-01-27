@@ -8,12 +8,15 @@ Your friendly, personal, multi-purpose [buddy](https://en.wiktionary.org/wiki/bu
 
 ## Build
 
--   Requirements: [Go](https://go.dev/doc/install), [Protocol Compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation) (Protobuf's protoc).
--   Generate sources from `*.proto` files.
+- Requirements: [Go](https://go.dev/doc/install), [Protocol Compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation) (Protobuf's protoc).
+- Generate sources from `*.proto` files.
+
     ```sh
     go generate ./pkg/...
     ```
--   (Optional) Build targets.
+
+- (Optional) Build targets.
+
     ```sh
     go build ./cmd/...
     ```
@@ -22,18 +25,22 @@ Your friendly, personal, multi-purpose [buddy](https://en.wiktionary.org/wiki/bu
 
 ### Backend Server
 
--   Run backend server.
+- Run backend server.
+
     ```sh
     go run ./cmd/bro-backend/main.go
     ```
+
     You will be prompted to input the listen address if there is no config file.
     The config file will be located in `$HOME/.bro/backend_config.json`.
 
 ### CLI Client
 
--   Run CLI client.
+- Run CLI client.
+
     ```sh
     go run ./cmd/bro/main.go --help
     ```
+
     You will be prompted to input the backend address if there is no config file.
     The config file will be located in `$HOME/.bro/config.json`.
