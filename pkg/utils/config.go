@@ -9,17 +9,14 @@ import (
 	"os"
 	"path/filepath"
 
-	color "github.com/threeal/bro/pkg/utils/color"
+	"github.com/fatih/color"
 )
 
 type Config interface {
 	Read() error
 	Write() error
-	init()
+	init() error
 }
-
-var HOME_DIR = getHomeDirectory()
-var BRO_CONFIG_DIR = filepath.Join(*HOME_DIR, ".bro")
 
 type BackendConfig struct {
 	ListenAddr *string `json:"listen_addr"`
@@ -29,12 +26,21 @@ type ClientConfig struct {
 	BackendAddr *string `json:"backend_addr"`
 }
 
-func getHomeDirectory() *string {
+func getHomeDir() (*string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatalf("failed to determine home directory: %v", err)
+		log.Printf("%v failed to determine home directory: %v", color.RedString("ERROR:"), err)
 	}
-	return &homeDir
+	return &homeDir, err
+}
+
+func getConfigDir() (string, error) {
+	homeDir, err := getHomeDir()
+	if err != nil {
+		return "", err
+	}
+	configDir := filepath.Join(*homeDir, ".bro")
+	return configDir, err
 }
 
 func (c *BackendConfig) Read() error {
@@ -53,28 +59,36 @@ func (c *ClientConfig) Write() error {
 	return writeConfigToFile(c, "config.json")
 }
 
-func (c *BackendConfig) init() {
+func (c *BackendConfig) init() error {
 	if c.ListenAddr == nil {
 		reader := bufio.NewReader(os.Stdin)
-		fmt.Print(color.Gray + "question" + color.Reset + " listen address (:320): ")
-		text, _ := reader.ReadString('\n')
+		fmt.Print(color.HiBlackString("question"), " listen address ", color.HiGreenString("(:320)"), ": ")
+		text, err := reader.ReadString('\n')
+		if err != nil {
+			return err
+		}
 		if text == "\n" {
 			text = ":320"
 		}
 		c.ListenAddr = &text
 	}
+	return nil
 }
 
-func (c *ClientConfig) init() {
+func (c *ClientConfig) init() error {
 	if c.BackendAddr == nil {
 		reader := bufio.NewReader(os.Stdin)
-		fmt.Print(color.Gray + "question" + color.Reset + " backend address (localhost:320): ")
-		text, _ := reader.ReadString('\n')
+		fmt.Print(color.HiBlackString("question"), " backend address ", color.HiGreenString("(localhost:320)"), ": ")
+		text, err := reader.ReadString('\n')
+		if err != nil {
+			return err
+		}
 		if text == "\n" {
 			text = "localhost:320"
 		}
 		c.BackendAddr = &text
 	}
+	return nil
 }
 
 func NewBackendConfig() *BackendConfig {
@@ -108,16 +122,27 @@ func initializeConfig(c Config) {
 }
 
 func writeConfigToFile(c Config, configName string) error {
-	file, _ := json.MarshalIndent(c, "", "  ")
-	configPath := filepath.Join(BRO_CONFIG_DIR, configName)
-	if err := createFolder(BRO_CONFIG_DIR); err != nil {
-		log.Fatalf("failed to create folder %s: %v", BRO_CONFIG_DIR, err)
+	file, err := json.MarshalIndent(c, "", "  ")
+	if err != nil {
+		log.Printf("%v failed to marshal json: %v", color.RedString("ERROR:"), err)
+	}
+	configDir, err := getConfigDir()
+	if err != nil {
+		return err
+	}
+	configPath := filepath.Join(configDir, configName)
+	if err := createFolder(configDir); err != nil {
+		log.Fatalf("failed to create folder %s: %v", configDir, err)
 	}
 	return ioutil.WriteFile(configPath, file, 0644)
 }
 
 func readConfigFromFile(c Config, configName string) error {
-	configPath := filepath.Join(BRO_CONFIG_DIR, configName)
+	configDir, err := getConfigDir()
+	if err != nil {
+		return err
+	}
+	configPath := filepath.Join(configDir, configName)
 	file, e := ioutil.ReadFile(configPath)
 	if e != nil {
 		return e
@@ -126,8 +151,8 @@ func readConfigFromFile(c Config, configName string) error {
 }
 
 func createFolder(path string) error {
-	if _, err := os.Stat(BRO_CONFIG_DIR); os.IsNotExist(err) {
-		return os.MkdirAll(BRO_CONFIG_DIR, 0700)
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return os.MkdirAll(path, 0700)
 	}
 	return nil
 }
