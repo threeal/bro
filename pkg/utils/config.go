@@ -2,7 +2,6 @@ package utils
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -16,36 +15,31 @@ type Config interface {
 	Init() error
 }
 
-func getHomeDir() (*string, error) {
+func getConfigDir() (string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Printf("%v failed to determine home directory: %v", color.RedString("ERROR:"), err)
-	}
-	return &homeDir, err
-}
-
-func getConfigDir() (string, error) {
-	homeDir, err := getHomeDir()
-	if err != nil {
 		return "", err
 	}
-	configDir := filepath.Join(*homeDir, ".bro")
+	configDir := filepath.Join(homeDir, ".bro")
 	return configDir, err
 }
 
-func InitializeConfig(c Config) Config {
-	initializeConfig(c)
-	return c
+func InitializeConfig(c Config) (Config, error) {
+	err := initializeConfig(c)
+	return c, err
 }
 
-func initializeConfig(c Config) {
+func initializeConfig(c Config) error {
 	if err := c.Read(); err != nil {
-		if err = c.Write(); err != nil {
-			log.Fatalf("failed to initialize config: %v", err)
+		if err := c.Write(); err != nil {
+			log.Printf("%v failed to initialize config: %v", color.RedString("ERROR:"), err)
+			return err
 		}
 	}
 	c.Init()
 	c.Write()
+	return nil
 }
 
 func WriteConfigToFile(c Config, configName string) error {
@@ -59,9 +53,9 @@ func WriteConfigToFile(c Config, configName string) error {
 	}
 	configPath := filepath.Join(configDir, configName)
 	if err := createFolder(configDir); err != nil {
-		log.Fatalf("failed to create folder %s: %v", configDir, err)
+		log.Printf("%v failed to create folder %s: %v", color.RedString("ERROR:"), configDir, err)
 	}
-	return ioutil.WriteFile(configPath, file, 0644)
+	return os.WriteFile(configPath, file, 0644)
 }
 
 func ReadConfigFromFile(c Config, configName string) error {
@@ -70,11 +64,20 @@ func ReadConfigFromFile(c Config, configName string) error {
 		return err
 	}
 	configPath := filepath.Join(configDir, configName)
-	file, e := ioutil.ReadFile(configPath)
+	file, e := os.ReadFile(configPath)
 	if e != nil {
 		return e
 	}
 	return json.Unmarshal([]byte(file), c)
+}
+
+func DeleteConfig(configName string) error {
+	configDir, err := getConfigDir()
+	if err != nil {
+		return err
+	}
+	configPath := filepath.Join(configDir, configName)
+	return os.Remove(configPath)
 }
 
 func createFolder(path string) error {

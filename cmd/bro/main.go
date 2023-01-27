@@ -23,8 +23,11 @@ func getClient(key string, conn grpc.ClientConnInterface) cli.Client {
 
 func main() {
 	flag.Parse()
-	config := utils.InitializeConfig(&bro.Config{}).(*bro.Config)
-	addr := *config.BackendAddr
+	config, err := utils.InitializeConfig(&bro.Config{})
+	if err != nil {
+		log.Fatalf("failed to initialize config: %v", err)
+	}
+	addr := *config.(*bro.Config).BackendAddr
 	conn, err := tcp.Connect(addr)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
