@@ -28,6 +28,7 @@ jobs:
         with:
           name: coverage-info
           path: |
+            .git/
             pkg/**/*.go
             go.mod
             profile.cov
