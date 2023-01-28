@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -12,7 +13,7 @@ import (
 type Config interface {
 	Read() error
 	Write() error
-	Init() error
+	Init(rd io.Reader) error
 }
 
 func getConfigDir() (string, error) {
@@ -37,7 +38,7 @@ func initializeConfig(c Config) error {
 			return err
 		}
 	}
-	c.Init()
+	c.Init(os.Stdin)
 	c.Write()
 	return nil
 }

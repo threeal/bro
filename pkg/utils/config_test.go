@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"io"
 	"os"
 	"testing"
 
@@ -20,7 +21,7 @@ func (c *testConfig) Write() error {
 	return nil
 }
 
-func (c *testConfig) Init() error {
+func (c *testConfig) Init(rd io.Reader) error {
 	return nil
 }
 
@@ -36,7 +37,7 @@ func (c *errorConfig) Write() error {
 	return errors.New("write error")
 }
 
-func (c *errorConfig) Init() error {
+func (c *errorConfig) Init(rd io.Reader) error {
 	return errors.New("init error")
 }
 
@@ -52,7 +53,7 @@ func (c *funcFieldConfig) Write() error {
 	return errors.New("write error")
 }
 
-func (c *funcFieldConfig) Init() error {
+func (c *funcFieldConfig) Init(rd io.Reader) error {
 	return errors.New("init error")
 }
 
@@ -60,7 +61,7 @@ func TestConfig(t *testing.T) {
 	filename := "ozymandias"
 	addr := ":21"
 	tmpDir := t.TempDir()
-	os.Setenv("HOME", tmpDir)
+	t.Setenv("HOME", tmpDir)
 	t.Run("it should successfully create config flow", func (t *testing.T) {
 		conf := &testConfig{&addr}
 		_, err := InitializeConfig(conf)
@@ -92,7 +93,7 @@ func TestConfig(t *testing.T) {
 		require.NoError(t, err)
 	})
 	t.Run("it should error when writing config", func (t *testing.T) {
-		os.Setenv("HOME", "/home/somerandomhomethatsnotsupposedtobepresent")
+		t.Setenv("HOME", "/home/somerandomhomethatsnotsupposedtobepresent")
 		conf := &errorConfig{&addr}
 		_, err := InitializeConfig(conf)
 		require.Error(t, err)
@@ -116,7 +117,7 @@ func TestConfig(t *testing.T) {
 		require.Error(t, err)
 		err = DeleteConfig(filename)
 		require.Error(t, err)
-		os.Setenv("HOME", tmpDir)
+		t.Setenv("HOME", tmpDir)
 	})
 	t.Run("it should error when marshaling a func", func (t *testing.T) {
 		conf := &funcFieldConfig{func() {}}
