@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
 jobs:
-  build-and-test:
+  check-generate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
@@ -14,8 +14,32 @@ jobs:
       - name: Install Protobuf
         run: sudo snap install protobuf --classic
 
-      - name: Generate sources
+      - name: Generate source files
         run: go generate ./pkg/...
+
+      - name: Check if source files are up to date
+        run: git diff --exit-code HEAD
+
+      - name: Upload this project as an artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          if-no-files-found: error
+          name: project
+          path: |
+            .git/
+            cmd/**/*.go
+            pkg/**/*.go
+            go.mod
+            go.sum
+
+  build-and-test:
+    needs: check-generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the project artifact
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: project
 
       - name: Build targets
         run: go build ./cmd/...
