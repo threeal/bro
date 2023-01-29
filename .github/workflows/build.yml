@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
 jobs:
-  build-and-test:
+  check-generate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
@@ -14,47 +14,70 @@ jobs:
       - name: Install Protobuf
         run: sudo snap install protobuf --classic
 
-      - name: Generate sources
+      - name: Generate source files
         run: go generate ./pkg/...
+
+      - name: Check if source files are up to date
+        run: git diff --exit-code HEAD
+
+      - name: Upload this project as an artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          if-no-files-found: error
+          name: project
+          path: |
+            .git/
+            cmd/**/*.go
+            pkg/**/*.go
+            go.mod
+            go.sum
+
+  check-build:
+    needs: check-generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the project artifact
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: project
 
       - name: Build targets
         run: go build ./cmd/...
+
+  unit-tests:
+    needs: check-generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the project artifact
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: project
 
       - name: Run tests
         continue-on-error: ${{ github.event_name != 'pull_request' && 'true' || 'false' }}
         run: go test -covermode atomic -coverprofile=profile.cov ./pkg/...
 
-      - name: Upload the code coverage info as an artifact
+      - name: Upload this test project as an artifact
         uses: actions/upload-artifact@v3.1.2
         with:
-          name: coverage-info
+          if-no-files-found: error
+          name: test-project
           path: |
             .git/
             pkg/**/*.go
             go.mod
+            go.sum
             profile.cov
 
-      - name: Install gotestsum
-        run: go install gotest.tools/gotestsum@latest
-
-      - name: Generate summary of test results
-        run: ~/go/bin/gotestsum --junitfile build/test.xml
-
-      - name: Upload test results as an artifact
-        uses: actions/upload-artifact@v3.1.2
-        with:
-          name: test-results
-          path: build/test.xml
-
   send-coverage-info:
-    needs: build-and-test
+    needs: unit-tests
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - name: Download the artifact of code coverage info
+      - name: Download the test project artifact
         uses: actions/download-artifact@v3.0.2
         with:
-          name: coverage-info
+          name: test-project
 
       - name: Send the code coverage info to Coveralls
         uses: shogo82148/actions-goveralls@v1.6.0
@@ -62,20 +85,26 @@ jobs:
           path-to-profile: profile.cov
 
   send-test-results:
-    needs: build-and-test
+    needs: unit-tests
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - name: Download the artifact of test results
+      - name: Download the test project artifact
         uses: actions/download-artifact@v3.0.2
         with:
-          name: test-results
+          name: test-project
 
-      - name: Download a Testspace client
+      - name: Install gotestsum
+        run: go install gotest.tools/gotestsum@latest
+
+      - name: Generate summary of test results
+        run: ~/go/bin/gotestsum --junitfile test.xml
+
+      - name: Download the Testspace client
         run: curl -fsSL https://testspace-client.s3.amazonaws.com/testspace-linux.tgz | tar -zxvf-
 
       - name: Configure the Testspace client
         run: ./testspace config url ${{ secrets.TESTSPACE_URL }}
 
-      - name: Send test results to Testspace
+      - name: Send the test results to Testspace
         run: ./testspace [Tests]"test.xml"
