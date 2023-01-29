@@ -30,14 +30,39 @@ type errorConfig struct {
 }
 
 func (c *errorConfig) Read() error {
-	return errors.New("read error")
+	if *c.BackendAddr == "readerror" {
+		return errors.New("read error")
+	}
+	return nil
 }
 
 func (c *errorConfig) Write() error {
-	return errors.New("write error")
+	if *c.BackendAddr == "writeerror" {
+		return errors.New("write error")
+	}
+	return nil
 }
 
 func (c *errorConfig) Init(rd io.Reader) error {
+	if *c.BackendAddr == "initerror" {
+		return errors.New("init error")
+	}
+	return nil
+}
+
+type errorAllConfig struct {
+	BackendAddr *string `json:"backend_addr"`
+}
+
+func (c *errorAllConfig) Read() error {
+	return errors.New("read error")
+}
+
+func (c *errorAllConfig) Write() error {
+	return errors.New("write error")
+}
+
+func (c *errorAllConfig) Init(rd io.Reader) error {
 	return errors.New("init error")
 }
 
@@ -64,7 +89,7 @@ func TestConfig(t *testing.T) {
 	t.Setenv("HOME", tmpDir)
 	t.Run("it should successfully create config flow", func(t *testing.T) {
 		conf := &testConfig{&addr}
-		_, err := InitializeConfig(conf)
+		err := InitializeConfig(conf)
 		require.NoError(t, err)
 		require.Equal(t, addr, *conf.BackendAddr)
 		err = WriteConfigToFile(conf, filename)
@@ -75,8 +100,8 @@ func TestConfig(t *testing.T) {
 		require.NoError(t, err)
 	})
 	t.Run("it should be failed to initialize config", func(t *testing.T) {
-		conf := &errorConfig{&addr}
-		_, err := InitializeConfig(conf)
+		conf := &errorAllConfig{&addr}
+		err := InitializeConfig(conf)
 		require.Error(t, err)
 		require.Equal(t, addr, *conf.BackendAddr)
 		err = WriteConfigToFile(conf, filename)
@@ -93,9 +118,19 @@ func TestConfig(t *testing.T) {
 		require.NoError(t, err)
 	})
 	t.Run("it should error when writing config", func(t *testing.T) {
+		payload := "writeerror"
+		conf := &errorConfig{&payload}
+		err := InitializeConfig(conf)
+		require.Error(t, err)
+		payload = "initerror"
+		conf = &errorConfig{&payload}
+		err = InitializeConfig(conf)
+		require.Error(t, err)
+	})
+	t.Run("it should error when writing config", func(t *testing.T) {
 		t.Setenv("HOME", "/home/somerandomhomethatsnotsupposedtobepresent")
-		conf := &errorConfig{&addr}
-		_, err := InitializeConfig(conf)
+		conf := &errorAllConfig{&addr}
+		err := InitializeConfig(conf)
 		require.Error(t, err)
 		require.Equal(t, addr, *conf.BackendAddr)
 		err = WriteConfigToFile(conf, filename)
@@ -107,8 +142,8 @@ func TestConfig(t *testing.T) {
 	})
 	t.Run("it should error when $HOME env is unset", func(t *testing.T) {
 		os.Unsetenv("HOME")
-		conf := &errorConfig{&addr}
-		_, err := InitializeConfig(conf)
+		conf := &errorAllConfig{&addr}
+		err := InitializeConfig(conf)
 		require.Error(t, err)
 		require.Equal(t, addr, *conf.BackendAddr)
 		err = WriteConfigToFile(conf, filename)

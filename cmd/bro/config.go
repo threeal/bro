@@ -1,4 +1,4 @@
-package brobackend
+package main
 
 import (
 	"bufio"
@@ -10,10 +10,10 @@ import (
 	"github.com/threeal/bro/pkg/utils"
 )
 
-var CONFIG_FILENAME = "backend_config.json"
+var CONFIG_FILENAME = "config.json"
 
 type Config struct {
-	ListenAddr *string `json:"listen_addr"`
+	BackendAddr *string `json:"backend_addr"`
 }
 
 func (c *Config) Read() error {
@@ -25,18 +25,18 @@ func (c *Config) Write() error {
 }
 
 func (c *Config) Init(rd io.Reader) error {
-	if c.ListenAddr == nil {
+	if c.BackendAddr == nil {
 		reader := bufio.NewReader(rd)
-		fmt.Print(color.HiBlackString("question"), " listen address ", color.HiGreenString("(:320)"), ": ")
+		fmt.Print(color.HiBlackString("question"), " backend address ", color.HiGreenString("(localhost:320)"), ": ")
 		text, err := reader.ReadString('\n')
 		if err != nil {
 			return err
 		}
 		if text == "\n" {
-			text = ":320"
+			text = "localhost:320"
 		}
 		text = strings.TrimSpace(text)
-		c.ListenAddr = &text
+		c.BackendAddr = &text
 	}
 	return nil
 }

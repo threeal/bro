@@ -28,7 +28,7 @@ Your friendly, personal, multi-purpose [buddy](https://en.wiktionary.org/wiki/bu
 - Run backend server.
 
     ```sh
-    go run ./cmd/bro-backend/main.go
+    go run ./cmd/bro-backend
     ```
 
     You will be prompted to input the listen address if there is no config file.
@@ -39,7 +39,7 @@ Your friendly, personal, multi-purpose [buddy](https://en.wiktionary.org/wiki/bu
 - Run CLI client.
 
     ```sh
-    go run ./cmd/bro/main.go --help
+    go run ./cmd/bro --help
     ```
 
     You will be prompted to input the backend address if there is no config file.

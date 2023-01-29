@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 
-	brobackend "github.com/threeal/bro/pkg/bro-backend"
 	"github.com/threeal/bro/pkg/schema"
 	"github.com/threeal/bro/pkg/service"
 	"github.com/threeal/bro/pkg/tcp"
@@ -11,11 +10,12 @@ import (
 )
 
 func main() {
-	config, err := utils.InitializeConfig(&brobackend.Config{})
+	config := &Config{}
+	err := utils.InitializeConfig(config)
 	if err != nil {
 		log.Fatalf("failed to initialize config: %v", err)
 	}
-	addr := *config.(*brobackend.Config).ListenAddr
+	addr := *config.ListenAddr
 	server, err := tcp.NewServer(addr)
 	if err != nil {
 		log.Fatalf("failed to create a new server on `%s`: %v", addr, err)

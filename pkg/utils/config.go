@@ -26,20 +26,19 @@ func getConfigDir() (string, error) {
 	return configDir, err
 }
 
-func InitializeConfig(c Config) (Config, error) {
-	err := initializeConfig(c)
-	return c, err
-}
-
-func initializeConfig(c Config) error {
+func InitializeConfig(c Config) error {
 	if err := c.Read(); err != nil {
 		if err := c.Write(); err != nil {
 			log.Printf("%v failed to initialize config: %v", color.RedString("ERROR:"), err)
 			return err
 		}
 	}
-	c.Init(os.Stdin)
-	c.Write()
+	if err := c.Init(os.Stdin); err != nil {
+		return err
+	}
+	if err := c.Write(); err != nil {
+		return err
+	}
 	return nil
 }
 
