@@ -21,6 +21,7 @@ jobs:
         run: go build ./cmd/...
 
       - name: Run tests
+        continue-on-error: ${{ github.event_name != 'pull_request' && 'true' || 'false' }}
         run: go test -covermode atomic -coverprofile=profile.cov ./pkg/...
 
       - name: Upload the code coverage info as an artifact
