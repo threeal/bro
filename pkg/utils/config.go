@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -27,7 +28,11 @@ func Prompt(q string, def string, rd io.Reader) (string, error) {
 	question := fmt.Sprintf(" %s ", q)
 	defaultOption := fmt.Sprintf("(%s)", def)
 	fmt.Print(color.HiBlackString("question"), question, color.HiGreenString(defaultOption), ": ")
-	return reader.ReadString('\n')
+	text, err := reader.ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(text), err
 }
 
 func getConfigDir() (string, error) {

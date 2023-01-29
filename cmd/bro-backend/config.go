@@ -2,7 +2,6 @@ package main
 
 import (
 	"io"
-	"strings"
 
 	"github.com/threeal/bro/pkg/utils"
 )
@@ -30,7 +29,6 @@ func (c *Config) Init(rd io.Reader) error {
 		if text == "\n" {
 			text = ":320"
 		}
-		text = strings.TrimSpace(text)
 		c.ListenAddr = text
 	}
 	return nil
