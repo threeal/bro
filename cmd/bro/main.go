@@ -27,7 +27,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to initialize config: %v", err)
 	}
-	addr := *config.BackendAddr
+	addr := config.BackendAddr
 	conn, err := tcp.Connect(addr)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)

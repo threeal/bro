@@ -15,7 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to initialize config: %v", err)
 	}
-	addr := *config.ListenAddr
+	addr := config.ListenAddr
 	server, err := tcp.NewServer(addr)
 	if err != nil {
 		log.Fatalf("failed to create a new server on `%s`: %v", addr, err)
