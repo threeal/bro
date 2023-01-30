@@ -165,4 +165,9 @@ func TestConfig(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, text, "Banger")
 	})
+	t.Run("it should prompt and errored", func(t *testing.T) {
+		text, err := Prompt("listen address", ":320", strings.NewReader(""))
+		require.Error(t, err)
+		require.Equal(t, text, "")
+	})
 }
