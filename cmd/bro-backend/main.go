@@ -10,7 +10,12 @@ import (
 )
 
 func main() {
-	addr := utils.GetEnvOrDefault("BRO_ADDR", ":50051")
+	config := &Config{}
+	err := utils.InitializeConfig(config)
+	if err != nil {
+		log.Fatalf("failed to initialize config: %v", err)
+	}
+	addr := config.ListenAddr
 	server, err := tcp.NewServer(addr)
 	if err != nil {
 		log.Fatalf("failed to create a new server on `%s`: %v", addr, err)
