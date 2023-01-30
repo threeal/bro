@@ -53,9 +53,12 @@ jobs:
         with:
           name: project
 
+      - name: Install gotestsum
+        run: go install gotest.tools/gotestsum@latest
+
       - name: Run tests
         continue-on-error: ${{ github.event_name != 'pull_request' && 'true' || 'false' }}
-        run: go test -covermode atomic -coverprofile=profile.cov ./pkg/...
+        run: ~/go/bin/gotestsum -- -covermode atomic -coverprofile=profile.cov ./pkg/...
 
       - name: Upload this test project as an artifact
         uses: actions/upload-artifact@v3.1.2
