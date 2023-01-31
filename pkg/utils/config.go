@@ -20,7 +20,7 @@ type Config interface {
 }
 
 func logError(s string, err error) {
-	log.Printf("%v %s: %v", color.RedString("ERROR:"), s, err)
+	log.Printf("%v %s: %v\n", color.RedString("ERROR:"), s, err)
 }
 
 func Prompt(q string, def string, rd io.Reader) (string, error) {
