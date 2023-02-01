@@ -1,18 +1,7 @@
 package main
 
-import (
-	"github.com/threeal/bro/pkg/cli"
-
-	"google.golang.org/grpc"
-)
-
-func getClient(key string, conn grpc.ClientConnInterface) cli.Client {
-	if key == "echo" {
-		return cli.NewEchoClient(conn)
-	}
-	return nil
-}
+import "github.com/threeal/bro/cmd/bro/commands"
 
 func main() {
-	rootCmd.Execute()
+	commands.Execute()
 }
