@@ -15,7 +15,7 @@ func getEchoCommand() *cobra.Command {
 		Short: "Echo command",
 		Long:  `A command that outputs the strings that are passed to it as arguments.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			msg := args			
+			msg := args
 			clientCmd := cmd.Name()
 			conn, err := broUtils.ConnectToBackend()
 			if err != nil {

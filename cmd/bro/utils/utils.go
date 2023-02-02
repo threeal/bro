@@ -9,10 +9,14 @@ import (
 )
 
 func GetClient(key string, conn grpc.ClientConnInterface) cli.Client {
-	if key == "echo" {
-		return cli.NewEchoClient(conn)
+	clients := map[string](func(grpc.ClientConnInterface) cli.Client){
+		"echo": cli.NewEchoClient,
 	}
-	return nil
+	client, ok := clients[key]
+	if !ok {
+		return nil
+	}
+	return client(conn)
 }
 
 func ConnectToBackend() (*grpc.ClientConn, error) {
