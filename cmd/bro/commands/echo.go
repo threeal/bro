@@ -6,27 +6,18 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/threeal/bro/cmd/bro/config"
 	broUtils "github.com/threeal/bro/cmd/bro/utils"
-	"github.com/threeal/bro/pkg/tcp"
-	"github.com/threeal/bro/pkg/utils"
 )
 
 func getEchoCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "echo [MESSAGE]",
-		Short: "Bro",
-		Long:  `Your friendly, personal, multi-purpose buddy written in Go.`,
+		Short: "Echo command",
+		Long:  `A command that outputs the strings that are passed to it as arguments.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			msg := args			
 			clientCmd := cmd.Name()
-			config := config.Config{}
-			err := utils.InitializeConfig(&config)
-			if err != nil {
-				log.Fatalf("failed to initialize config: %v", err)
-			}
-			addr := config.BackendAddr
-			conn, err := tcp.Connect(addr)
+			conn, err := broUtils.ConnectToBackend()
 			if err != nil {
 				log.Fatalf("failed to connect: %v", err)
 			}
