@@ -11,9 +11,10 @@ import (
 
 func getEchoCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "echo [MESSAGE]",
+		Use:   "echo [messages...]",
 		Short: "Echo command",
 		Long:  `A command that outputs the strings that are passed to it as arguments.`,
+		Args: cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			msg := args
 			clientCmd := cmd.Name()
