@@ -26,7 +26,7 @@ func (c *Config) Init(rd io.Reader) error {
 		if err != nil {
 			return err
 		}
-		if text == "\n" {
+		if text == "" {
 			text = "localhost:320"
 		}
 		c.BackendAddr = text

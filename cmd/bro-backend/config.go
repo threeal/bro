@@ -26,7 +26,7 @@ func (c *Config) Init(rd io.Reader) error {
 		if err != nil {
 			return err
 		}
-		if text == "\n" {
+		if text == "" {
 			text = ":320"
 		}
 		c.ListenAddr = text
