@@ -28,11 +28,17 @@ Your friendly, personal, multi-purpose [buddy](https://en.wiktionary.org/wiki/bu
 - Run backend server.
 
     ```sh
-    go run ./cmd/bro-backend
+    go run ./cmd/bro-backend spin
     ```
 
     You will be prompted to input the listen address if there is no config file.
     The config file will be located in `$HOME/.bro/backend_config.json`.
+
+- Show help.
+
+    ```sh
+    go run ./cmd/bro-backend
+    ```
 
 ### CLI Client
 
