@@ -9,7 +9,7 @@ Group=<user>
 Restart=always
 RestartSec=3
 WorkingDirectory=<workdir>
-ExecStart=<goabsolutepath> run ./cmd/bro-backend
+ExecStart=<goabsolutepath> run ./cmd/bro-backend spin
 
 [Install]
 WantedBy=multi-user.target
