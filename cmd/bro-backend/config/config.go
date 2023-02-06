@@ -22,12 +22,12 @@ func (c *Config) Write() error {
 
 func (c *Config) Init(rd io.Reader) error {
 	if c.ListenAddr == "" {
-		text, err := utils.Prompt("listen address", ":320", rd)
+		text, err := utils.Prompt("listen address", ":13120", rd)
 		if err != nil {
 			return err
 		}
 		if text == "" {
-			text = ":320"
+			text = ":13120"
 		}
 		c.ListenAddr = text
 	}

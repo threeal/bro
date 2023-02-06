@@ -22,12 +22,12 @@ func (c *Config) Write() error {
 
 func (c *Config) Init(rd io.Reader) error {
 	if c.BackendAddr == "" {
-		text, err := utils.Prompt("backend address", "localhost:320", rd)
+		text, err := utils.Prompt("backend address", "localhost:13120", rd)
 		if err != nil {
 			return err
 		}
 		if text == "" {
-			text = "localhost:320"
+			text = "localhost:13120"
 		}
 		c.BackendAddr = text
 	}
