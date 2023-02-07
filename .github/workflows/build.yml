@@ -44,6 +44,16 @@ jobs:
       - name: Build targets
         run: go build ./cmd/...
 
+  check-install:
+    needs: check-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install bro command
+        run: go install github.com/threeal/bro/cmd/bro@latest
+
+      - name: Run bro command
+        run: ~/go/bin/bro --help
+
   unit-tests:
     needs: check-generate
     runs-on: ubuntu-latest
