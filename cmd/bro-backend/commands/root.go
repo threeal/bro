@@ -8,7 +8,7 @@ import (
 
 func Execute() {
 	var rootCmd = &cobra.Command{Use: "bro-backend"}
-	rootCmd.AddCommand(getSpinCommand())
+	rootCmd.AddCommand(getSpinCommand(), getConfigCommand())
 	if runtime.GOOS == "linux" {
 		rootCmd.AddCommand(getStatusCommand())
 	}
