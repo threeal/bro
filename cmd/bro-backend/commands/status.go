@@ -14,7 +14,7 @@ func getStatusCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "status",
 		Short: "Status command",
-		Long:  `A command to check Bro backend if config exist and the service is running..`,
+		Long:  `A command to check Bro backend status..`,
 		Args:  cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
 			broService := exec.Command("systemctl", "status", "bro")
