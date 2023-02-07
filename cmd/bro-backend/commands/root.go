@@ -9,7 +9,7 @@ import (
 func Execute() {
 	var rootCmd = &cobra.Command{Use: "bro-backend"}
 	rootCmd.AddCommand(getSpinCommand())
-	if (runtime.GOOS == "linux") {
+	if runtime.GOOS == "linux" {
 		rootCmd.AddCommand(getStatusCommand())
 	}
 	rootCmd.Execute()
