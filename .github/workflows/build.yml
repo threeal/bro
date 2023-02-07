@@ -47,12 +47,16 @@ jobs:
   check-install:
     needs: check-build
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cmd: [bro, bro-backend]
     steps:
-      - name: Install bro command
-        run: go install github.com/threeal/bro/cmd/bro@latest
+      - name: Install command
+        run: go install github.com/threeal/bro/cmd/${{ matrix.cmd }}@latest
 
-      - name: Run bro command
-        run: ~/go/bin/bro --help
+      - name: Run command
+        run: ~/go/bin/${{ matrix.cmd }} --help
 
   unit-tests:
     needs: check-generate
