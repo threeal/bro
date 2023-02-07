@@ -20,7 +20,6 @@ func GetJSONFields(j interface{}) []string {
 	for i := 0; i < val.Type().NumField(); i++ {
 		t := val.Type().Field(i)
 		fieldName := t.Name
-
 		switch jsonTag := t.Tag.Get("json"); jsonTag {
 		case "-":
 		case "":
@@ -35,4 +34,40 @@ func GetJSONFields(j interface{}) []string {
 		}
 	}
 	return result
+}
+
+func GetStructValueByJSON(j interface{}, key string) string {
+	val := reflect.ValueOf(j)
+	for i := 0; i < val.Type().NumField(); i++ {
+		t := val.Type().Field(i)
+		switch jsonTag := t.Tag.Get("json"); jsonTag {
+		case "-":
+		case "":
+		default:
+			parts := strings.Split(jsonTag, ",")
+			if parts[0] == key {
+				return val.Field(i).String()
+			}
+		}
+	}
+	return ""
+}
+
+func SetStructValueByJSON(j interface{}, key string, value string) {
+	valPtr := reflect.ValueOf(j)
+	val := reflect.Indirect(reflect.ValueOf(j))
+	for i := 0; i < val.Type().NumField(); i++ {
+		t := val.Type().Field(i)
+		fieldName := t.Name
+		switch jsonTag := t.Tag.Get("json"); jsonTag {
+		case "-":
+		case "":
+		default:
+			parts := strings.Split(jsonTag, ",")
+			if parts[0] == key {
+				valPtr.Elem().FieldByName(fieldName).SetString(value)
+				return
+			}
+		}
+	}
 }

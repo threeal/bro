@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/threeal/bro/cmd/bro-backend/config"
+	"github.com/threeal/bro/cmd/bro/config"
 	"github.com/threeal/bro/pkg/utils"
 )
 
@@ -12,7 +12,7 @@ func getConfigCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "config",
 		Short: "Config command",
-		Long:  `A utility command to configure bro backend..`,
+		Long:  `A utility command to configure bro..`,
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			key := args[0]
