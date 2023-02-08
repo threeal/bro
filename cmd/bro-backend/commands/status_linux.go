@@ -3,11 +3,9 @@ package commands
 import (
 	"fmt"
 	"log"
-	"os/exec"
-	"regexp"
-	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/threeal/bro/pkg/systemctl"
 )
 
 func getStatusCommand() *cobra.Command {
@@ -17,20 +15,12 @@ func getStatusCommand() *cobra.Command {
 		Long:  `A command to check Bro backend status..`,
 		Args:  cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
-			broService := exec.Command("systemctl", "status", "bro")
-			out, _ := broService.CombinedOutput()
-			activeRegex, _ := regexp.Compile("Active:.*")
-			activeString := activeRegex.FindString(string(out))
-			if activeString == "" {
-				log.Fatalf(string(out))
+			info, err := systemctl.Status("bro")
+			if err != nil {
+				log.Fatalf("Failed to get status of the Bro Backend service: %v", err)
 			}
-			status := strings.Split(activeString, ": ")[1]
-			fmt.Printf("Status: %s\n", status)
-			PIDRegex, _ := regexp.Compile("Main PID:.*")
-			mainPIDString := PIDRegex.FindString(string(out))
-			if mainPIDString != "" {
-				fmt.Println(mainPIDString)
-			}
+			fmt.Printf("Status: %s\n", info.Active)
+			fmt.Print(info.MainPid)
 		},
 	}
 }
