@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/fatih/color v1.14.1
+	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/spf13/cobra v1.6.1
 	github.com/stretchr/testify v1.8.1

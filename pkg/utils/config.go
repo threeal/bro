@@ -35,7 +35,7 @@ func Prompt(q string, def string, rd io.Reader) (string, error) {
 	return strings.TrimSpace(text), err
 }
 
-func getConfigDir() (string, error) {
+func GetConfigDir() (string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		logError("failed to determine home directory", err)
@@ -66,7 +66,7 @@ func WriteConfigToFile(c Config, configName string) error {
 	if err != nil {
 		logError("failed to marshal json", err)
 	}
-	configDir, err := getConfigDir()
+	configDir, err := GetConfigDir()
 	if err != nil {
 		return err
 	}
@@ -78,7 +78,7 @@ func WriteConfigToFile(c Config, configName string) error {
 }
 
 func ReadConfigFromFile(c Config, configName string) error {
-	configDir, err := getConfigDir()
+	configDir, err := GetConfigDir()
 	if err != nil {
 		return err
 	}
@@ -91,7 +91,7 @@ func ReadConfigFromFile(c Config, configName string) error {
 }
 
 func DeleteConfig(configName string) error {
-	configDir, err := getConfigDir()
+	configDir, err := GetConfigDir()
 	if err != nil {
 		return err
 	}
