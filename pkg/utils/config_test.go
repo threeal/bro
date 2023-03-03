@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/threeal/bro/pkg/internal"
 )
 
 type testConfig struct {
@@ -88,8 +89,8 @@ func TestConfig(t *testing.T) {
 	addr := ":21"
 	tmpDir := t.TempDir()
 	t.Setenv("HOME", tmpDir)
-	tmpStdout := os.Stdout
-	os.Stdout, _ = os.Open(os.DevNull)
+
+	defer internal.Quiet()()
 	t.Run("it should successfully create config flow", func(t *testing.T) {
 		conf := &testConfig{addr}
 		err := InitializeConfig(conf)
@@ -172,5 +173,4 @@ func TestConfig(t *testing.T) {
 		require.Error(t, err)
 		require.Equal(t, text, "")
 	})
-	os.Stdout = tmpStdout
 }
