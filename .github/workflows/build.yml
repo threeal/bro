@@ -71,7 +71,7 @@ jobs:
         run: go install gotest.tools/gotestsum@latest
 
       - name: Run tests
-        continue-on-error: ${{ github.event_name != 'pull_request' && 'true' || 'false' }}
+        continue-on-error: ${{ github.event_name != 'pull_request' }}
         run: ~/go/bin/gotestsum --junitfile test.xml -- -covermode atomic -coverprofile=profile.cov ./pkg/...
 
       - name: Check test coverage
