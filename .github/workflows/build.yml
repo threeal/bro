@@ -75,6 +75,7 @@ jobs:
         run: ~/go/bin/gotestsum --junitfile test.xml -- -covermode atomic -coverprofile=profile.cov ./pkg/...
 
       - name: Check test coverage
+        if: github.event_name == 'pull_request'
         uses: vladopajic/go-test-coverage@v2.7.0
         with:
           profile: profile.cov
