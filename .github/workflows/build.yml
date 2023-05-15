@@ -74,6 +74,15 @@ jobs:
         continue-on-error: ${{ github.event_name != 'pull_request' && 'true' || 'false' }}
         run: ~/go/bin/gotestsum --junitfile test.xml -- -covermode atomic -coverprofile=profile.cov ./pkg/...
 
+      - name: Check test coverage
+        uses: vladopajic/go-test-coverage@v2.7.0
+        with:
+          profile: profile.cov
+          local-prefix: github.com/threeal/bro
+          threshold-file: 100
+          threshold-package: 100
+          threshold-total: 100
+
       - name: Upload this test project as an artifact
         uses: actions/upload-artifact@v3.1.2
         with:
