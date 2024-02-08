@@ -108,7 +108,7 @@ jobs:
           name: test-project
 
       - name: Send the code coverage info to Coveralls
-        uses: shogo82148/actions-goveralls@v1.8.0
+        uses: shogo82148/actions-goveralls@v1.9.0
         with:
           path-to-profile: profile.cov
 
