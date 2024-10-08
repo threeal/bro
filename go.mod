@@ -1,6 +1,8 @@
 module github.com/threeal/bro
 
-go 1.19
+go 1.21
+
+toolchain go1.22.1
 
 require (
 	github.com/fatih/color v1.17.0
@@ -8,7 +10,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
 	google.golang.org/grpc v1.64.0
-	google.golang.org/protobuf v1.34.2
+	google.golang.org/protobuf v1.35.1
 )
 
 require (
